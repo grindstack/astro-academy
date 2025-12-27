@@ -1,0 +1,309 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+:root{
+  --bg-stars: url('/assets/stars-bg.svg');
+}
+
+html,body,#root{height:100%}
+
+body{
+  background: #000000;
+  font-family: 'Space Grotesk', Inter, ui-sans-serif, system-ui;
+  overflow-x: hidden;
+}
+
+/* Smooth scroll */
+html {
+  scroll-behavior: smooth;
+}
+
+/* ==================== ANIMATED STARS BACKGROUND ==================== */
+.stars-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  background: #000000;
+  overflow: hidden;
+}
+
+.stars {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-repeat: repeat;
+}
+
+/* Small stars - faster movement with glow */
+.stars-small {
+  background-image: 
+    radial-gradient(2px 2px at 20px 30px, rgba(147, 197, 253, 1), rgba(147, 197, 253, 0.3) 40%, transparent),
+    radial-gradient(2px 2px at 60px 70px, rgba(147, 197, 253, 1), rgba(147, 197, 253, 0.3) 40%, transparent),
+    radial-gradient(2px 2px at 50px 50px, rgba(255, 255, 255, 1), rgba(147, 197, 253, 0.5) 40%, transparent),
+    radial-gradient(2px 2px at 130px 80px, rgba(147, 197, 253, 1), rgba(147, 197, 253, 0.3) 40%, transparent),
+    radial-gradient(2px 2px at 90px 10px, rgba(147, 197, 253, 1), rgba(147, 197, 253, 0.3) 40%, transparent),
+    radial-gradient(2px 2px at 160px 120px, rgba(147, 197, 253, 1), rgba(147, 197, 253, 0.3) 40%, transparent),
+    radial-gradient(2px 2px at 30px 140px, rgba(147, 197, 253, 1), rgba(147, 197, 253, 0.3) 40%, transparent);
+  background-size: 200px 200px;
+  animation: twinkle 1.5s infinite ease-in-out, move-stars-small 10s linear infinite;
+  filter: drop-shadow(0 0 2px rgba(147, 197, 253, 0.8));
+}
+
+/* Medium stars - faster speed with glow */
+.stars-medium {
+  background-image:
+    radial-gradient(3px 3px at 100px 150px, rgba(255, 255, 255, 1), rgba(147, 197, 253, 0.5) 50%, transparent),
+    radial-gradient(3px 3px at 200px 80px, rgba(147, 197, 253, 1), rgba(147, 197, 253, 0.4) 50%, transparent),
+    radial-gradient(3px 3px at 50px 200px, rgba(147, 197, 253, 1), rgba(147, 197, 253, 0.4) 50%, transparent),
+    radial-gradient(3px 3px at 250px 180px, rgba(147, 197, 253, 1), rgba(147, 197, 253, 0.4) 50%, transparent);
+  background-size: 300px 300px;
+  animation: twinkle 2s infinite ease-in-out, move-stars-medium 17s linear infinite;
+  filter: drop-shadow(0 0 3px rgba(147, 197, 253, 0.9));
+}
+
+/* Large stars - faster movement with strong glow */
+.stars-large {
+  background-image:
+    radial-gradient(4px 4px at 150px 100px, rgba(255, 255, 255, 1), rgba(147, 197, 253, 0.6) 60%, transparent),
+    radial-gradient(3px 3px at 300px 250px, rgba(147, 197, 253, 1), rgba(147, 197, 253, 0.5) 60%, transparent),
+    radial-gradient(4px 4px at 80px 320px, rgba(255, 255, 255, 1), rgba(147, 197, 253, 0.6) 60%, transparent);
+  background-size: 400px 400px;
+  animation: twinkle 2.5s infinite ease-in-out, move-stars-large 25s linear infinite;
+  filter: drop-shadow(0 0 4px rgba(147, 197, 253, 1));
+}
+
+@keyframes move-stars-small {
+  from { transform: translateY(0); }
+  to { transform: translateY(-200px); }
+}
+
+@keyframes move-stars-medium {
+  from { transform: translateY(0); }
+  to { transform: translateY(-300px); }
+}
+
+@keyframes move-stars-large {
+  from { transform: translateY(0); }
+  to { transform: translateY(-400px); }
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.8; }
+  50% { opacity: 1; }
+}
+
+/* ==================== GLASSMORPHISM STYLES ==================== */
+.glass-nav {
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0.4) 0%,
+    rgba(0, 0, 0, 0.3) 100%
+  );
+  border-bottom: 1px solid rgba(147, 197, 253, 0.1);
+  backdrop-filter: blur(12px) saturate(150%);
+  -webkit-backdrop-filter: blur(12px) saturate(150%);
+}
+
+/* Nav link hover underline effect */
+.nav-link-hover::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #0DD3D3, #60A5FA);
+  transition: width 0.3s ease;
+}
+
+.nav-link-hover:hover::after {
+  width: 100%;
+}
+
+.glass-card {
+  background: linear-gradient(
+    135deg,
+    rgba(0, 0, 0, 0.7) 0%,
+    rgba(0, 0, 0, 0.5) 100%
+  );
+  border: 1px solid rgba(147, 197, 253, 0.2);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  box-shadow: 
+    0 8px 32px rgba(13, 211, 211, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-card:hover {
+  border-color: rgba(147, 197, 253, 0.4);
+  box-shadow: 
+    0 16px 48px rgba(13, 211, 211, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  transform: translateY(-4px);
+}
+
+/* ==================== FLOATING CARD ANIMATION ==================== */
+.floating-card {
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+/* ==================== GRADIENT TEXT ==================== */
+.gradient-text {
+  background: linear-gradient(
+    135deg,
+    #0DD3D3 0%,
+    #60A5FA 50%,
+    #A78BFA 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradient-shift 3s ease infinite;
+  background-size: 200% 200%;
+}
+
+@keyframes gradient-shift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+/* ==================== GLOW BUTTON ==================== */
+.glow-button {
+  position: relative;
+  box-shadow: 
+    0 0 20px rgba(13, 211, 211, 0.5),
+    0 0 40px rgba(13, 211, 211, 0.3),
+    inset 0 0 20px rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+}
+
+.glow-button:hover {
+  box-shadow: 
+    0 0 30px rgba(13, 211, 211, 0.8),
+    0 0 60px rgba(13, 211, 211, 0.5),
+    0 0 100px rgba(168, 85, 247, 0.3),
+    inset 0 0 20px rgba(255, 255, 255, 0.3);
+  transform: scale(1.05);
+}
+
+.glow-button::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  background: linear-gradient(45deg, #0DD3D3, #A78BFA, #0DD3D3);
+  border-radius: inherit;
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  animation: rotate-glow 3s linear infinite;
+}
+
+.glow-button:hover::before {
+  opacity: 0.7;
+  filter: blur(10px);
+}
+
+@keyframes rotate-glow {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* ==================== COURSE CARD HOVER EFFECTS ==================== */
+.course-card {
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.course-card:hover {
+  border-color: rgba(147, 197, 253, 0.4);
+  box-shadow: 
+    0 20px 60px rgba(13, 211, 211, 0.3),
+    0 0 40px rgba(168, 85, 247, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+/* ==================== NAV LINK HOVER ==================== */
+.nav-link {
+  position: relative;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #0DD3D3, #A78BFA);
+  transition: width 0.3s ease;
+}
+
+.nav-link:hover::after {
+  width: 100%;
+}
+
+/* ==================== CUSTOM SCROLLBAR ==================== */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(3, 7, 18, 0.8);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #0DD3D3, #A78BFA);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #60A5FA, #A78BFA);
+}
+
+/* ==================== RESPONSIVE UTILITIES ==================== */
+@media (max-width: 768px) {
+  .gradient-text {
+    font-size: 2.5rem;
+  }
+  
+  .glass-nav {
+    padding: 0.75rem 1rem;
+  }
+}
+
+/* ==================== OLD STYLES (PRESERVED) ==================== */
+.glass {
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  border: 1px solid rgba(255,255,255,0.06);
+  backdrop-filter: blur(8px) saturate(120%);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 6px 18px rgba(13,211,211,0.04);
+}
+
+.btn-accent{
+  background: linear-gradient(90deg, rgba(13,211,211,0.12), rgba(13,211,211,0.06));
+  color: #082626;
+  padding: .5rem 1rem;
+  border-radius: .5rem;
+}

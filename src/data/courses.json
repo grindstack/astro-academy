@@ -1,0 +1,221 @@
+[
+  {
+    "id": "c1",
+    "title": "Observational Astronomy",
+    "category": "Earth & Space",
+    "description": "Learn to observe and identify celestial objects.",
+    "duration": 15,
+    "rating": 4.8,
+    "studentsEnrolled": 0,
+    "instructorId": "instructor-1",
+    "modules": [
+      {
+        "id": "m1",
+        "title": "Introduction & Tools",
+        "lessons": [
+          {"id":"l1","title":"Welcome to the course","type":"video","duration":6,"url":"https://youtu.be/IWVJq-4zW24?si=Ut-ZKLz0O21CV_EJ"},
+          {"id":"l2","title":"Telescope basics","type":"video","duration":22,"url":"https://youtu.be/IWVJq-4zW24?si=Ut-ZKLz0O21CV_EJ"}
+        ]
+      },
+      {
+        "id": "m2",
+        "title": "Deep Sky Observations",
+        "lessons": [
+          {"id":"l3","title":"Nebula imaging","type":"video","duration":34,"url":"https://youtu.be/IWVJq-4zW24?si=Ut-ZKLz0O21CV_EJ"}
+        ]
+      }
+    ]
+  },
+  {
+    "id": "c2",
+    "title": "Rocket Propulsion Principles",
+    "category": "Space Missions",
+    "description": "Core physics behind chemical and electric propulsion systems.",
+    "duration": 18,
+    "rating": 4.7,
+    "studentsEnrolled": 0,
+    "instructorId": "instructor-1",
+    "modules": [
+      {"id":"m3","title":"Propulsion Basics","lessons":[{"id":"l4","title":"Thrust and momentum","type":"video","duration":28,"url":"https://youtu.be/IWVJq-4zW24?si=Ut-ZKLz0O21CV_EJ"}]}
+    ]
+  },
+  {
+    "id": "c3",
+    "title": "Astrobiology: Life Beyond Earth",
+    "category": "Astrophysics",
+    "description": "Survey of life detection strategies, habitability, and extremophiles.",
+    "duration": 10,
+    "rating": 4.9,
+    "studentsEnrolled": 0,
+    "instructorId": "instructor-1",
+    "modules": [
+      {"id":"m4","title":"Habitats & Biosignatures","lessons":[{"id":"l5","title":"What is life?","type":"video","duration":18,"url":"https://youtu.be/IWVJq-4zW24?si=Ut-ZKLz0O21CV_EJ"}]}
+    ]
+  },
+  {
+    "id": "c4",
+    "title": "Orbital Mechanics: Kepler to Modern",
+    "category": "Space Missions",
+    "description": "From Kepler's laws to Hohmann transfers and rendezvous techniques.",
+    "duration": 14,
+    "rating": 4.6,
+    "studentsEnrolled": 0,
+    "instructorId": "instructor-1",
+    "modules": [
+      {"id":"m5","title":"Two-body Problem","lessons":[{"id":"l6","title":"Keplerian orbits","type":"video","duration":32,"url":"https://youtu.be/IWVJq-4zW24?si=Ut-ZKLz0O21CV_EJ"}]}
+    ]
+  },
+  {
+    "id": "c5",
+    "title": "Space Mission Design Workshop",
+    "category": "Space Missions",
+    "description": "Project-driven course to design an end-to-end small satellite mission (mock).",
+    "duration": 22,
+    "rating": 4.85,
+    "studentsEnrolled": 0,
+    "instructorId": "instructor-1",
+    "modules": [
+      {"id":"m6","title":"Mission Planning","lessons":[{"id":"l7","title":"Requirements & constraints","type":"video","duration":25,"url":"https://youtu.be/IWVJq-4zW24?si=Ut-ZKLz0O21CV_EJ"}]}
+    ]
+  },
+  {
+    "id": "c6",
+    "title": "Planetary Science Fundamentals",
+    "category": "Earth & Space",
+    "description": "Explore the formation, composition, and geology of planets in our solar system.",
+    "duration": 16,
+    "rating": 4.7,
+    "studentsEnrolled": 0,
+    "instructorId": "instructor-1",
+    "modules": [
+      {
+        "id": "m7",
+        "title": "Solar System Overview",
+        "lessons": [
+          {"id":"l8","title":"Introduction to Planetary Science","type":"video","duration":20,"url":"https://youtu.be/IWVJq-4zW24?si=Ut-ZKLz0O21CV_EJ"},
+          {"id":"l9","title":"Planet Formation","type":"video","duration":28,"url":"https://youtu.be/IWVJq-4zW24?si=Ut-ZKLz0O21CV_EJ"}
+        ]
+      }
+    ]
+  },
+  {
+    "id": "c7",
+    "title": "Black Holes and Cosmology",
+    "category": "Astrophysics",
+    "description": "Unravel the mysteries of black holes, dark matter, and the structure of the universe.",
+    "duration": 20,
+    "rating": 4.9,
+    "studentsEnrolled": 0,
+    "instructorId": "instructor-1",
+    "modules": [
+      {
+        "id": "m8",
+        "title": "Introduction to Black Holes",
+        "lessons": [
+          {"id":"l10","title":"What are Black Holes?","type":"video","duration":18,"url":"https://youtu.be/IWVJq-4zW24?si=Ut-ZKLz0O21CV_EJ"},
+          {"id":"l11","title":"Event Horizon Explained","type":"video","duration":25,"url":"https://youtu.be/IWVJq-4zW24?si=Ut-ZKLz0O21CV_EJ"}
+        ]
+      }
+    ]
+  },
+  {
+    "id": "c8",
+    "title": "Satellite Technology & Communication",
+    "category": "Space Missions",
+    "description": "Learn about satellite design, orbital mechanics, and space communication systems.",
+    "duration": 18,
+    "rating": 4.6,
+    "studentsEnrolled": 0,
+    "instructorId": "instructor-1",
+    "modules": [
+      {
+        "id": "m9",
+        "title": "Satellite Basics",
+        "lessons": [
+          {"id":"l12","title":"How Satellites Work","type":"video","duration":22,"url":"https://youtu.be/IWVJq-4zW24?si=Ut-ZKLz0O21CV_EJ"},
+          {"id":"l13","title":"Orbital Mechanics","type":"video","duration":30,"url":"https://youtu.be/IWVJq-4zW24?si=Ut-ZKLz0O21CV_EJ"}
+        ]
+      }
+    ]
+  },
+  {
+    "id": "c9",
+    "title": "Stellar Evolution and Life Cycles",
+    "category": "Astrophysics",
+    "description": "Study how stars are born, evolve, and die across billions of years.",
+    "duration": 14,
+    "rating": 4.8,
+    "studentsEnrolled": 0,
+    "instructorId": "instructor-1",
+    "modules": [
+      {
+        "id": "m10",
+        "title": "Star Formation",
+        "lessons": [
+          {"id":"l14","title":"Birth of a Star","type":"video","duration":24,"url":"https://youtu.be/IWVJq-4zW24?si=Ut-ZKLz0O21CV_EJ"},
+          {"id":"l15","title":"Main Sequence Stars","type":"video","duration":20,"url":"https://youtu.be/IWVJq-4zW24?si=Ut-ZKLz0O21CV_EJ"}
+        ]
+      }
+    ]
+  },
+  {
+    "id": "c10",
+    "title": "Mars Exploration & Colonization",
+    "category": "Space Missions",
+    "description": "Discover the challenges and technologies needed for human Mars missions.",
+    "duration": 19,
+    "rating": 4.85,
+    "studentsEnrolled": 0,
+    "instructorId": "instructor-1",
+    "modules": [
+      {
+        "id": "m11",
+        "title": "Journey to Mars",
+        "lessons": [
+          {"id":"l16","title":"Mars Mission Overview","type":"video","duration":26,"url":"https://youtu.be/IWVJq-4zW24?si=Ut-ZKLz0O21CV_EJ"},
+          {"id":"l17","title":"Life Support Systems","type":"video","duration":22,"url":"https://youtu.be/IWVJq-4zW24?si=Ut-ZKLz0O21CV_EJ"}
+        ]
+      }
+    ]
+  },
+  {
+    "id": "c11",
+    "title": "Exoplanets and Habitability",
+    "category": "Earth & Space",
+    "description": "Search for planets beyond our solar system and conditions for life.",
+    "duration": 12,
+    "rating": 4.75,
+    "studentsEnrolled": 0,
+    "instructorId": "instructor-1",
+    "modules": [
+      {
+        "id": "m12",
+        "title": "Finding New Worlds",
+        "lessons": [
+          {"id":"l18","title":"Exoplanet Detection Methods","type":"video","duration":20,"url":"https://youtu.be/IWVJq-4zW24?si=Ut-ZKLz0O21CV_EJ"},
+          {"id":"l19","title":"Habitable Zone","type":"video","duration":18,"url":"https://youtu.be/IWVJq-4zW24?si=Ut-ZKLz0O21CV_EJ"}
+        ]
+      }
+    ]
+  },
+  {
+    "id": "c12",
+    "title": "Gravitational Waves & Relativity",
+    "category": "Astrophysics",
+    "description": "Understand Einstein's theories and the detection of gravitational waves.",
+    "duration": 17,
+    "rating": 4.9,
+    "studentsEnrolled": 0,
+    "instructorId": "instructor-1",
+    "modules": [
+      {
+        "id": "m13",
+        "title": "Einstein's Legacy",
+        "lessons": [
+          {"id":"l20","title":"General Relativity Basics","type":"video","duration":28,"url":"https://youtu.be/IWVJq-4zW24?si=Ut-ZKLz0O21CV_EJ"},
+          {"id":"l21","title":"Detecting Gravitational Waves","type":"video","duration":25,"url":"https://youtu.be/IWVJq-4zW24?si=Ut-ZKLz0O21CV_EJ"}
+        ]
+      }
+    ]
+  }
+]
