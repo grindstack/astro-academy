@@ -76,3 +76,8 @@ coverage/
 # package-lock.json
 # yarn.lock
 # pnpm-lock.yaml
+
+# vscode-notebook-cell: 
+/venv/Lib/site-packages/
+/venv/Scripts/
+/venv/share/

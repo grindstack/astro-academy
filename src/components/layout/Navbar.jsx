@@ -65,6 +65,16 @@ export default function Navbar(){
           >
             FAQ
           </button>
+          <NavLink
+            to="/stellar-scanner"
+            className={({ isActive }) =>
+              `nav-link-hover text-sm font-medium transition-colors relative ${
+                isActive ? 'text-accent-cyan' : 'text-starlight/80 hover:text-starlight'
+              }`
+            }
+          >
+            Stellar Scanner
+          </NavLink>
           
           {user ? (
             <>

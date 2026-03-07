@@ -6,6 +6,7 @@ import CourseCatalog from './pages/CourseCatalog'
 import CourseDetails from './pages/CourseDetails'
 import Dashboard from './pages/Dashboard'
 import Login from './pages/Login'
+import StellarScanner from './pages/StellarScanner'
 import { AuthProvider, ProtectedRoute } from './context/AuthContext'
 
 export default function App(){
@@ -21,6 +22,7 @@ export default function App(){
             <Route path="/" element={<Home/>} />
             <Route path="/catalog" element={<CourseCatalog/>} />
             <Route path="/course/:id" element={<CourseDetails/>} />
+            <Route path="/stellar-scanner" element={<StellarScanner/>} />
             {/* Unified dashboard with role-based guard */}
             <Route path="/dashboard" element={<ProtectedRoute><Dashboard/></ProtectedRoute>} />
             {/* Legacy routes redirect to unified dashboard */}
