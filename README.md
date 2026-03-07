@@ -57,6 +57,12 @@ Astro Academy is a comprehensive Learning Management System (LMS) built with mod
 
 ```
 astro/
+├── backend_stellar/           # Backend server and data for Stellar Scanner
+│   ├── app.py                 # Flask (or FastAPI) backend entry point
+│   ├── data/                  # Data used by the backend
+│   │   └── stellar_data.csv
+│   └── notebooks/             # Notebooks for analysis and modeling
+│       └── stellar_classification.ipynb
 ├── public/                    # Static assets
 │   ├── icons/                # Icon files
 │   └── images/               # Image assets
@@ -110,6 +116,7 @@ astro/
 │   │   └── stateManager.js
 │   ├── App.jsx               # Main application component
 │   └── main.jsx              # Application entry point
+├── STELLAR_SCANNER_DOCUMENTATION.md  # Backend Stellar scanner documentation
 ├── index.html                # HTML template
 ├── package.json              # Project dependencies
 ├── postcss.config.cjs        # PostCSS configuration
@@ -185,6 +192,8 @@ The application uses a service layer located in `src/services/api.js` for handli
 - **Instructors**: `src/data/instructors.json`
 - **Statistics**: `src/data/stats.json`
 - **Users**: `src/data/users.json`
+
+> 📘 **Backend Documentation**: See the Stellar backend docs for API details and data schemas: [STELLAR_SCANNER_DOCUMENTATION.md](./STELLAR_SCANNER_DOCUMENTATION.md)
 
 ## Component Architecture
 
