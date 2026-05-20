@@ -1,0 +1,1387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>STQA – Astro Academy Website | University Presentation</title>
+<style>
+/* ───────────────────────────────────────────────
+   RESET & BASE
+─────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg-dark:   #06071a;
+  --bg-slide:  #0b0d2e;
+  --accent1:   #4f8ef7;   /* blue  */
+  --accent2:   #a259f7;   /* purple*/
+  --accent3:   #00d4c8;   /* teal  */
+  --text-main: #e8eaf6;
+  --text-sub:  #9fa8da;
+  --glass:     rgba(255,255,255,0.05);
+  --glass-border: rgba(255,255,255,0.10);
+  --green:  #4caf50;
+  --yellow: #ffc107;
+  --red:    #f44336;
+  --orange: #ff7043;
+}
+
+html, body {
+  width: 100%; height: 100%;
+  background: var(--bg-dark);
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  color: var(--text-main);
+  overflow: hidden;
+  user-select: none;
+}
+
+/* ───────────────────────────────────────────────
+   STAR BACKGROUND
+─────────────────────────────────────────────── */
+#stars-canvas {
+  position: fixed; inset: 0;
+  pointer-events: none; z-index: 0;
+}
+
+/* ───────────────────────────────────────────────
+   PRESENTATION WRAPPER
+─────────────────────────────────────────────── */
+#deck {
+  position: relative; z-index: 1;
+  width: 100vw; height: 100vh;
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* ───────────────────────────────────────────────
+   SLIDES
+─────────────────────────────────────────────── */
+.slide {
+  position: absolute;
+  width: min(1200px, 96vw);
+  min-height: min(675px, 92vh);
+  background: var(--bg-slide);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  padding: 56px 64px;
+  display: flex; flex-direction: column; justify-content: center;
+  box-shadow: 0 0 80px rgba(79,142,247,0.12), 0 0 0 1px rgba(162,89,247,0.08);
+  opacity: 0;
+  transform: translateX(80px) scale(0.97);
+  pointer-events: none;
+  transition: opacity 0.55s cubic-bezier(.4,0,.2,1),
+              transform 0.55s cubic-bezier(.4,0,.2,1);
+}
+.slide.active {
+  opacity: 1;
+  transform: translateX(0) scale(1);
+  pointer-events: auto;
+}
+.slide.exit {
+  opacity: 0;
+  transform: translateX(-80px) scale(0.97);
+}
+
+/* Decorative top line */
+.slide::before {
+  content: '';
+  position: absolute; top: 0; left: 64px; right: 64px; height: 3px;
+  background: linear-gradient(90deg, var(--accent1), var(--accent2), var(--accent3));
+  border-radius: 0 0 4px 4px;
+  opacity: 0.9;
+}
+
+/* ───────────────────────────────────────────────
+   TYPOGRAPHY HELPERS
+─────────────────────────────────────────────── */
+.gradient-title {
+  background: linear-gradient(135deg, var(--accent1) 0%, var(--accent2) 60%, var(--accent3) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 800; line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+.section-tag {
+  display: inline-block;
+  align-self: flex-start;
+  font-size: 0.72rem; font-weight: 700; letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--accent3);
+  margin-bottom: 10px;
+  padding: 4px 12px;
+  background: rgba(0,212,200,0.10);
+  border: 1px solid rgba(0,212,200,0.25);
+  border-radius: 20px;
+}
+h1 { font-size: clamp(2rem, 4vw, 3.2rem); }
+h2 { font-size: clamp(1.6rem, 3vw, 2.4rem); margin-bottom: 28px; }
+h3 { font-size: 1.15rem; font-weight: 600; color: var(--text-main); }
+p  { font-size: 1rem; color: var(--text-sub); line-height: 1.7; }
+ul { list-style: none; }
+ul li { position: relative; padding-left: 22px; color: var(--text-sub);
+        font-size: 1rem; margin-bottom: 8px; line-height: 1.6; }
+ul li::before { content: ''; position: absolute; left: 0; top: 10px;
+                width: 8px; height: 8px; border-radius: 50%;
+                background: linear-gradient(135deg, var(--accent1), var(--accent2)); }
+
+/* ───────────────────────────────────────────────
+   GRID / CARD HELPERS
+─────────────────────────────────────────────── */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; }
+.grid-4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 18px; }
+
+.card {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: 14px;
+  padding: 22px 24px;
+  transition: transform .25s, box-shadow .25s;
+}
+.card:hover { transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(79,142,247,0.18); }
+
+.card-icon {
+  font-size: 2rem; margin-bottom: 12px;
+}
+
+/* ───────────────────────────────────────────────
+   TABLE
+─────────────────────────────────────────────── */
+.styled-table {
+  width: 100%; border-collapse: collapse; font-size: 0.88rem;
+}
+.styled-table th {
+  background: linear-gradient(135deg, rgba(79,142,247,0.25), rgba(162,89,247,0.25));
+  color: var(--text-main); font-weight: 700; text-align: left;
+  padding: 11px 16px; border-bottom: 2px solid rgba(79,142,247,0.35);
+}
+.styled-table td {
+  padding: 10px 16px; color: var(--text-sub);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.styled-table tr:hover td { background: rgba(79,142,247,0.06); }
+
+.badge {
+  display: inline-block; padding: 3px 10px; border-radius: 20px;
+  font-size: 0.76rem; font-weight: 700;
+}
+.badge-pass   { background: rgba(76,175,80,0.18);  color: #81c784; }
+.badge-fail   { background: rgba(244,67,54,0.18);  color: #e57373; }
+.badge-high   { background: rgba(244,67,54,0.18);  color: #e57373; }
+.badge-med    { background: rgba(255,193,7,0.18);  color: #ffd54f; }
+.badge-low    { background: rgba(76,175,80,0.18);  color: #81c784; }
+.badge-open   { background: rgba(255,112,67,0.18); color: #ff8a65; }
+.badge-closed { background: rgba(76,175,80,0.18);  color: #81c784; }
+
+/* ───────────────────────────────────────────────
+   PROGRESS / SCORE BARS
+─────────────────────────────────────────────── */
+.score-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+
+.score-card {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: 14px; padding: 20px 22px;
+  display: flex; flex-direction: column; gap: 12px;
+}
+.score-label { display: flex; justify-content: space-between; align-items: center; }
+.score-label span:first-child { font-size: .9rem; font-weight: 600; color: var(--text-main); }
+.score-num { font-size: 1.6rem; font-weight: 800; }
+.score-bar-bg { height: 10px; border-radius: 6px; background: rgba(255,255,255,0.08); overflow: hidden; }
+.score-bar { height: 100%; border-radius: 6px; transition: width 1s ease; }
+
+/* Lighthouse score colors */
+.score-perf .score-num   { color: var(--orange); }
+.score-perf .score-bar   { background: linear-gradient(90deg,#ff7043,#ffa040); }
+.score-acc  .score-num   { color: #69f0ae; }
+.score-acc  .score-bar   { background: linear-gradient(90deg,#00c853,#69f0ae); }
+.score-bp   .score-num   { color: #40c4ff; }
+.score-bp   .score-bar   { background: linear-gradient(90deg,#0091ea,#40c4ff); }
+.score-seo  .score-num   { color: #ce93d8; }
+.score-seo  .score-bar   { background: linear-gradient(90deg,#aa00ff,#ce93d8); }
+
+.score-note { font-size: .82rem; color: var(--text-sub); margin-top: 4px; }
+
+/* ───────────────────────────────────────────────
+   DEVICE MOCKUP (responsive slide)
+─────────────────────────────────────────────── */
+.device-mockups {
+  display: flex; align-items: flex-end; justify-content: center;
+  gap: 28px; margin-top: 8px;
+}
+.device-frame {
+  border-radius: 18px;
+  border: 2px solid rgba(79,142,247,0.45);
+  background: rgba(11,13,46,0.9);
+  box-shadow: 0 0 30px rgba(79,142,247,0.15);
+  overflow: hidden; position: relative;
+  display: flex; flex-direction: column;
+}
+.device-desktop { width: 320px; height: 200px; border-radius: 12px; }
+.device-tablet  { width: 180px; height: 240px; border-radius: 16px; }
+.device-mobile  { width: 100px; height: 200px; border-radius: 22px; }
+
+.device-screen {
+  flex: 1; background: linear-gradient(135deg,#0d1440 0%,#1a0640 100%);
+  padding: 10px 12px; display: flex; flex-direction: column; gap: 5px;
+}
+.d-bar { height: 8px; border-radius: 4px; background: rgba(79,142,247,0.35); }
+.d-block { border-radius: 4px; background: rgba(162,89,247,0.2); }
+.device-label {
+  text-align: center; font-size: .72rem; font-weight: 600;
+  color: var(--text-sub); padding: 6px 0 4px;
+  border-top: 1px solid rgba(255,255,255,0.07);
+}
+
+/* ───────────────────────────────────────────────
+   TOOL CARDS
+─────────────────────────────────────────────── */
+.tool-card {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: 14px;
+  padding: 24px 18px;
+  text-align: center;
+  transition: transform .25s, box-shadow .25s;
+}
+.tool-card:hover { transform: translateY(-5px);
+  box-shadow: 0 14px 40px rgba(79,142,247,0.2); }
+.tool-icon { font-size: 2.4rem; margin-bottom: 12px; display: block; }
+.tool-name { font-weight: 700; font-size: .95rem; color: var(--text-main); margin-bottom: 6px; }
+.tool-desc { font-size: .8rem; color: var(--text-sub); line-height: 1.5; }
+
+/* ───────────────────────────────────────────────
+   SVG RING CHART
+─────────────────────────────────────────────── */
+.ring-chart-wrap { display: flex; gap: 18px; justify-content: center; flex-wrap: wrap; }
+.ring-chart { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.ring-chart text { font-family: inherit; }
+.ring-label { font-size: .8rem; color: var(--text-sub); font-weight: 600; text-align: center; max-width: 80px; }
+
+/* ───────────────────────────────────────────────
+   SLIDE-SPECIFIC OVERRIDES
+─────────────────────────────────────────────── */
+/* Slide 1 – Title */
+#slide-1 { text-align: center; justify-content: center; align-items: center; }
+#slide-1 .subtitle { font-size: 1.2rem; color: var(--text-sub); margin: 8px 0 32px; }
+#slide-1 .meta-grid {
+  display: inline-grid; grid-template-columns: 1fr 1fr;
+  gap: 12px 40px; text-align: left; margin-top: 8px;
+}
+#slide-1 .meta-item { font-size: .9rem; color: var(--text-sub); }
+#slide-1 .meta-item strong { color: var(--text-main); }
+
+/* Slide 15 – Thank You */
+#slide-15 { text-align: center; justify-content: center; align-items: center; }
+#slide-15 .big-icon { font-size: 5rem; margin-bottom: 16px; }
+#slide-15 h1 { font-size: clamp(2.4rem,5vw,4rem); }
+
+/* ───────────────────────────────────────────────
+   NAV CONTROLS
+─────────────────────────────────────────────── */
+#controls {
+  position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%);
+  display: flex; align-items: center; gap: 18px; z-index: 10;
+  background: rgba(11,13,46,0.85);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border);
+  border-radius: 50px; padding: 10px 24px;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.4);
+}
+#controls button {
+  background: none; border: none; cursor: pointer;
+  color: var(--text-sub); font-size: 1.4rem;
+  width: 38px; height: 38px;
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  transition: background .2s, color .2s;
+}
+#controls button:hover {
+  background: rgba(79,142,247,0.18); color: var(--text-main);
+}
+#slide-counter {
+  font-size: .85rem; font-weight: 600;
+  color: var(--text-sub); min-width: 60px; text-align: center;
+}
+#progress-bar {
+  position: fixed; bottom: 0; left: 0; height: 3px;
+  background: linear-gradient(90deg, var(--accent1), var(--accent2));
+  transition: width .4s ease; z-index: 20;
+}
+
+/* ───────────────────────────────────────────────
+   SLIDE NUMBER TAG (top-right)
+─────────────────────────────────────────────── */
+.slide-num-tag {
+  position: absolute; top: 22px; right: 28px;
+  font-size: .72rem; font-weight: 600; color: var(--text-sub);
+  letter-spacing: .08em;
+}
+
+/* ───────────────────────────────────────────────
+   ANIMATIONS
+─────────────────────────────────────────────── */
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(22px); }
+  to   { opacity:1; transform:translateY(0);    }
+}
+.slide.active .anim-1 { animation: fadeUp .5s .1s both; }
+.slide.active .anim-2 { animation: fadeUp .5s .25s both; }
+.slide.active .anim-3 { animation: fadeUp .5s .4s both; }
+.slide.active .anim-4 { animation: fadeUp .5s .55s both; }
+
+/* ───────────────────────────────────────────────
+   SCROLLABLE AREA inside slide (tables)
+─────────────────────────────────────────────── */
+.scroll-area { overflow-y: auto; max-height: 300px; }
+.scroll-area::-webkit-scrollbar { width: 6px; }
+.scroll-area::-webkit-scrollbar-thumb { background: rgba(79,142,247,0.35); border-radius: 3px; }
+
+/* ───────────────────────────────────────────────
+   SECURITY CHECK LIST
+─────────────────────────────────────────────── */
+.check-list { display: flex; flex-direction: column; gap: 14px; }
+.check-item {
+  display: flex; align-items: flex-start; gap: 14px;
+  background: var(--glass); border: 1px solid var(--glass-border);
+  border-radius: 12px; padding: 14px 18px;
+}
+.check-icon { font-size: 1.5rem; flex-shrink: 0; }
+.check-body h4 { font-size: .95rem; font-weight: 700; color: var(--text-main); margin-bottom: 4px; }
+.check-body p  { font-size: .85rem; color: var(--text-sub); margin: 0; }
+
+/* ───────────────────────────────────────────────
+   VALIDATION EXAMPLES
+─────────────────────────────────────────────── */
+.validation-examples { display: flex; flex-direction: column; gap: 12px; }
+.val-item {
+  display: flex; align-items: center; gap: 16px;
+  background: var(--glass); border: 1px solid var(--glass-border);
+  border-radius: 12px; padding: 12px 18px;
+}
+.val-icon  { font-size: 1.6rem; flex-shrink: 0; }
+.val-input {
+  flex: 1; background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(244,67,54,0.45);
+  border-radius: 8px; padding: 8px 12px;
+  font-size: .85rem; color: #ef9a9a; font-family: monospace;
+}
+.val-error { font-size: .78rem; color: #e57373; font-weight: 600; white-space: nowrap; }
+
+/* ───────────────────────────────────────────────
+   RESPONSIVE (zoom on small screens)
+─────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .slide { padding: 36px 28px; }
+  .grid-2, .grid-3, .grid-4, .score-grid, .device-mockups { flex-direction: column; }
+  .grid-2, .grid-3, .grid-4, .score-grid { grid-template-columns: 1fr; }
+  .device-desktop { width: 220px; }
+  .device-tablet  { width: 140px; height: 180px; }
+  .device-mobile  { width: 80px;  height: 160px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Stars canvas -->
+<canvas id="stars-canvas"></canvas>
+
+<!-- Progress bar -->
+<div id="progress-bar"></div>
+
+<!-- Slide deck -->
+<div id="deck">
+
+  <!-- ═══════════════════════════════════════════
+       SLIDE 1 — TITLE
+  ═══════════════════════════════════════════ -->
+  <div class="slide active" id="slide-1">
+    <div class="slide-num-tag">01 / 15</div>
+
+    <div class="anim-1">
+      <div class="section-tag">University Presentation</div>
+    </div>
+
+    <h1 class="gradient-title anim-2" style="font-size:clamp(1.8rem,3.8vw,2.8rem);margin-bottom:10px;">
+      Software Testing &amp;<br>Quality Assurance
+    </h1>
+
+    <p class="subtitle anim-2" style="font-size:1.15rem;color:#9fa8da;">
+      🚀 Astro Academy Website Testing
+    </p>
+
+    <div style="width:180px;height:2px;background:linear-gradient(90deg,var(--accent1),var(--accent2));margin:0 auto 28px;" class="anim-3"></div>
+
+    <div class="meta-grid anim-4">
+      <div class="meta-item"><strong>Student Name</strong><br>Your Name Here</div>
+      <div class="meta-item"><strong>Course Name</strong><br>Software Testing &amp; QA</div>
+      <div class="meta-item"><strong>University</strong><br>Your University Name</div>
+      <div class="meta-item"><strong>Semester</strong><br>Spring 2025</div>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════
+       SLIDE 2 — INTRODUCTION
+  ═══════════════════════════════════════════ -->
+  <div class="slide" id="slide-2">
+    <div class="slide-num-tag">02 / 15</div>
+    <div class="section-tag anim-1">Introduction</div>
+    <h2 class="gradient-title anim-2">What is Astro Academy?</h2>
+
+    <div class="grid-2 anim-3" style="gap:32px;align-items:start;">
+      <div>
+        <p style="margin-bottom:18px;">
+          <strong style="color:var(--text-main);">Astro Academy</strong> is a modern, web-based e-learning
+          platform dedicated to astronomy, space science, and astrophysics education.
+        </p>
+        <ul>
+          <li><strong style="color:var(--text-main);">Purpose:</strong> Deliver accessible, engaging space-science education online</li>
+          <li><strong style="color:var(--text-main);">Primary Users:</strong> Students, space enthusiasts, lifelong learners</li>
+          <li><strong style="color:var(--text-main);">Platform:</strong> React.js SPA with Tailwind CSS &amp; Framer Motion</li>
+          <li><strong style="color:var(--text-main);">Backend:</strong> Python / FastAPI with AI-powered Stellar Scanner</li>
+        </ul>
+      </div>
+      <div>
+        <h3 style="margin-bottom:16px;color:var(--accent1);">Key Functionalities</h3>
+        <div style="display:flex;flex-direction:column;gap:12px;">
+          <div class="card" style="padding:14px 18px;">
+            <span style="font-size:1.3rem;">🌌</span>
+            <strong style="margin-left:10px;font-size:.9rem;">Course Catalogue</strong>
+            <p style="font-size:.8rem;margin-top:4px;">Browse astronomy &amp; space-science courses</p>
+          </div>
+          <div class="card" style="padding:14px 18px;">
+            <span style="font-size:1.3rem;">🔭</span>
+            <strong style="margin-left:10px;font-size:.9rem;">Stellar Scanner</strong>
+            <p style="font-size:.8rem;margin-top:4px;">AI-powered celestial-object classification</p>
+          </div>
+          <div class="card" style="padding:14px 18px;">
+            <span style="font-size:1.3rem;">👤</span>
+            <strong style="margin-left:10px;font-size:.9rem;">User Auth &amp; Dashboard</strong>
+            <p style="font-size:.8rem;margin-top:4px;">Secure registration, login, and profile</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════
+       SLIDE 3 — PROJECT OBJECTIVES
+  ═══════════════════════════════════════════ -->
+  <div class="slide" id="slide-3">
+    <div class="slide-num-tag">03 / 15</div>
+    <div class="section-tag anim-1">Objectives</div>
+    <h2 class="gradient-title anim-2">Project Objectives</h2>
+
+    <div class="grid-2 anim-3" style="gap:20px;">
+      <div class="card">
+        <div class="card-icon">✅</div>
+        <h3 style="margin-bottom:8px;">Verify Functionality</h3>
+        <p style="font-size:.9rem;">Ensure all website features — login, registration, course browsing, and search — function as intended and produce correct outputs.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🐛</div>
+        <h3 style="margin-bottom:8px;">Detect Bugs &amp; Usability Issues</h3>
+        <p style="font-size:.9rem;">Identify functional defects, UI glitches, and usability problems that affect the end-user experience.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">⚡</div>
+        <h3 style="margin-bottom:8px;">Evaluate Performance &amp; Responsiveness</h3>
+        <p style="font-size:.9rem;">Measure page load speeds, Lighthouse scores, and layout adaptation across device sizes.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🛡️</div>
+        <h3 style="margin-bottom:8px;">Ensure Quality &amp; Reliability</h3>
+        <p style="font-size:.9rem;">Validate security measures, input handling, and overall software reliability following STQA best practices.</p>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════
+       SLIDE 4 — FEATURES
+  ═══════════════════════════════════════════ -->
+  <div class="slide" id="slide-4">
+    <div class="slide-num-tag">04 / 15</div>
+    <div class="section-tag anim-1">Features</div>
+    <h2 class="gradient-title anim-2">Features of Astro Academy</h2>
+
+    <div class="grid-4 anim-3" style="margin-top:4px;">
+      <div class="card" style="text-align:center;">
+        <div style="font-size:2rem;margin-bottom:10px;">📝</div>
+        <h3 style="font-size:.9rem;margin-bottom:6px;">User Registration</h3>
+        <p style="font-size:.78rem;">Secure sign-up with email &amp; password validation</p>
+      </div>
+      <div class="card" style="text-align:center;">
+        <div style="font-size:2rem;margin-bottom:10px;">🔐</div>
+        <h3 style="font-size:.9rem;margin-bottom:6px;">Login Authentication</h3>
+        <p style="font-size:.78rem;">JWT-based secure authentication system</p>
+      </div>
+      <div class="card" style="text-align:center;">
+        <div style="font-size:2rem;margin-bottom:10px;">📊</div>
+        <h3 style="font-size:.9rem;margin-bottom:6px;">Dashboard</h3>
+        <p style="font-size:.78rem;">Personalized user dashboard with progress</p>
+      </div>
+      <div class="card" style="text-align:center;">
+        <div style="font-size:2rem;margin-bottom:10px;">🎓</div>
+        <h3 style="font-size:.9rem;margin-bottom:6px;">Course Browsing</h3>
+        <p style="font-size:.78rem;">Explore astronomy &amp; astrophysics courses</p>
+      </div>
+      <div class="card" style="text-align:center;">
+        <div style="font-size:2rem;margin-bottom:10px;">🔍</div>
+        <h3 style="font-size:.9rem;margin-bottom:6px;">Search Functionality</h3>
+        <p style="font-size:.78rem;">Keyword-based course &amp; content search</p>
+      </div>
+      <div class="card" style="text-align:center;">
+        <div style="font-size:2rem;margin-bottom:10px;">📱</div>
+        <h3 style="font-size:.9rem;margin-bottom:6px;">Responsive Design</h3>
+        <p style="font-size:.78rem;">Optimised for desktop, tablet &amp; mobile</p>
+      </div>
+      <div class="card" style="text-align:center;">
+        <div style="font-size:2rem;margin-bottom:10px;">🛸</div>
+        <h3 style="font-size:.9rem;margin-bottom:6px;">Stellar Scanner</h3>
+        <p style="font-size:.78rem;">AI-powered celestial object classifier</p>
+      </div>
+      <div class="card" style="text-align:center;">
+        <div style="font-size:2rem;margin-bottom:10px;">⚙️</div>
+        <h3 style="font-size:.9rem;margin-bottom:6px;">Admin / User Modules</h3>
+        <p style="font-size:.78rem;">Role-based access control for users &amp; admins</p>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════
+       SLIDE 5 — TESTING TYPES
+  ═══════════════════════════════════════════ -->
+  <div class="slide" id="slide-5">
+    <div class="slide-num-tag">05 / 15</div>
+    <div class="section-tag anim-1">Testing Overview</div>
+    <h2 class="gradient-title anim-2">Testing Types Performed</h2>
+
+    <div class="grid-3 anim-3" style="margin-top:4px;">
+      <div class="card">
+        <div class="card-icon">⚙️</div>
+        <h3 style="margin-bottom:8px;font-size:.95rem;">Functional Testing</h3>
+        <p style="font-size:.82rem;">Verified core features: login, registration, search, navigation, and course browsing workflows.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🎨</div>
+        <h3 style="margin-bottom:8px;font-size:.95rem;">UI / UX Testing</h3>
+        <p style="font-size:.82rem;">Evaluated visual design, layout consistency, colour contrast, font hierarchy, and interaction feedback.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">📋</div>
+        <h3 style="margin-bottom:8px;font-size:.95rem;">Validation Testing</h3>
+        <p style="font-size:.82rem;">Checked form validations: required fields, email format, password strength, and special characters.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">⚡</div>
+        <h3 style="margin-bottom:8px;font-size:.95rem;">Performance Testing</h3>
+        <p style="font-size:.82rem;">Measured load times and Lighthouse scores for Performance, Accessibility, Best Practices, and SEO.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🔒</div>
+        <h3 style="margin-bottom:8px;font-size:.95rem;">Security Testing</h3>
+        <p style="font-size:.82rem;">Assessed password masking, route protection, input sanitisation, and unauthorized-access prevention.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🌐</div>
+        <h3 style="margin-bottom:8px;font-size:.95rem;">Compatibility Testing</h3>
+        <p style="font-size:.82rem;">Tested across Chrome, Firefox, Edge, Safari, and multiple screen resolutions and device types.</p>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════
+       SLIDE 6 — FUNCTIONAL TESTING TABLE
+  ═══════════════════════════════════════════ -->
+  <div class="slide" id="slide-6">
+    <div class="slide-num-tag">06 / 15</div>
+    <div class="section-tag anim-1">Functional Testing</div>
+    <h2 class="gradient-title anim-2">Test Cases – Functional Testing</h2>
+
+    <div class="scroll-area anim-3">
+      <table class="styled-table">
+        <thead>
+          <tr>
+            <th>Test Case ID</th>
+            <th>Scenario</th>
+            <th>Steps</th>
+            <th>Expected Result</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong style="color:var(--accent1);">TC-001</strong></td>
+            <td>Valid Login</td>
+            <td>Enter correct email &amp; password → Submit</td>
+            <td>User redirected to dashboard</td>
+            <td><span class="badge badge-pass">✓ Pass</span></td>
+          </tr>
+          <tr>
+            <td><strong style="color:var(--accent1);">TC-002</strong></td>
+            <td>Invalid Password</td>
+            <td>Enter correct email, wrong password → Submit</td>
+            <td>Error message "Invalid credentials"</td>
+            <td><span class="badge badge-pass">✓ Pass</span></td>
+          </tr>
+          <tr>
+            <td><strong style="color:var(--accent1);">TC-003</strong></td>
+            <td>Empty Input Fields</td>
+            <td>Leave email/password blank → Submit</td>
+            <td>Validation error shown on fields</td>
+            <td><span class="badge badge-pass">✓ Pass</span></td>
+          </tr>
+          <tr>
+            <td><strong style="color:var(--accent1);">TC-004</strong></td>
+            <td>Search Functionality</td>
+            <td>Enter keyword in search bar → Press Enter</td>
+            <td>Relevant courses displayed</td>
+            <td><span class="badge badge-pass">✓ Pass</span></td>
+          </tr>
+          <tr>
+            <td><strong style="color:var(--accent1);">TC-005</strong></td>
+            <td>Logout Function</td>
+            <td>Click Logout button</td>
+            <td>Session cleared, redirect to home</td>
+            <td><span class="badge badge-pass">✓ Pass</span></td>
+          </tr>
+          <tr>
+            <td><strong style="color:var(--accent1);">TC-006</strong></td>
+            <td>Course Page Load</td>
+            <td>Click on a course card</td>
+            <td>Course detail page loads correctly</td>
+            <td><span class="badge badge-pass">✓ Pass</span></td>
+          </tr>
+          <tr>
+            <td><strong style="color:var(--accent1);">TC-007</strong></td>
+            <td>User Registration</td>
+            <td>Fill registration form → Submit</td>
+            <td>Account created, confirmation shown</td>
+            <td><span class="badge badge-pass">✓ Pass</span></td>
+          </tr>
+          <tr>
+            <td><strong style="color:var(--accent1);">TC-008</strong></td>
+            <td>Empty Search Query</td>
+            <td>Submit search with blank field</td>
+            <td>Warning shown / no action taken</td>
+            <td><span class="badge badge-fail">✗ Fail</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════
+       SLIDE 7 — VALIDATION TESTING
+  ═══════════════════════════════════════════ -->
+  <div class="slide" id="slide-7">
+    <div class="slide-num-tag">07 / 15</div>
+    <div class="section-tag anim-1">Validation Testing</div>
+    <h2 class="gradient-title anim-2">Form Validation Test Cases</h2>
+
+    <div class="grid-2 anim-3" style="gap:24px;align-items:start;">
+      <div class="validation-examples">
+        <div class="val-item">
+          <span class="val-icon">📧</span>
+          <div style="flex:1;">
+            <div style="font-size:.8rem;color:var(--text-sub);margin-bottom:6px;">Invalid Email Format</div>
+            <div class="val-input">user@domain</div>
+          </div>
+          <span class="val-error">⚠ Valid email required</span>
+        </div>
+        <div class="val-item">
+          <span class="val-icon">🔑</span>
+          <div style="flex:1;">
+            <div style="font-size:.8rem;color:var(--text-sub);margin-bottom:6px;">Weak Password</div>
+            <div class="val-input">abc</div>
+          </div>
+          <span class="val-error">⚠ Min 8 characters</span>
+        </div>
+        <div class="val-item">
+          <span class="val-icon">📝</span>
+          <div style="flex:1;">
+            <div style="font-size:.8rem;color:var(--text-sub);margin-bottom:6px;">Empty Form Submission</div>
+            <div class="val-input" style="color:#ef9a9a90;font-style:italic;">(blank)</div>
+          </div>
+          <span class="val-error">⚠ Field is required</span>
+        </div>
+        <div class="val-item">
+          <span class="val-icon">⚡</span>
+          <div style="flex:1;">
+            <div style="font-size:.8rem;color:var(--text-sub);margin-bottom:6px;">Special Characters in Name</div>
+            <div class="val-input">&lt;script&gt;alert(1)&lt;/script&gt;</div>
+          </div>
+          <span class="val-error">⚠ Invalid characters</span>
+        </div>
+      </div>
+
+      <div>
+        <h3 style="margin-bottom:16px;color:var(--accent1);">Validation Strategy</h3>
+        <ul style="margin-bottom:20px;">
+          <li>Client-side validation using React controlled components</li>
+          <li>Real-time feedback on input focus/blur events</li>
+          <li>Server-side validation as secondary defence layer</li>
+          <li>Regex-based email and password strength rules</li>
+          <li>XSS prevention via input sanitisation</li>
+        </ul>
+
+        <div style="background:rgba(76,175,80,0.08);border:1px solid rgba(76,175,80,0.2);border-radius:12px;padding:16px;">
+          <div style="font-size:.82rem;font-weight:700;color:#81c784;margin-bottom:8px;">✅ Validation Coverage</div>
+          <div style="display:flex;gap:12px;flex-wrap:wrap;">
+            <span class="badge badge-pass">Email Format</span>
+            <span class="badge badge-pass">Password Strength</span>
+            <span class="badge badge-pass">Required Fields</span>
+            <span class="badge badge-pass">XSS Prevention</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════
+       SLIDE 8 — UI/UX & RESPONSIVE TESTING
+  ═══════════════════════════════════════════ -->
+  <div class="slide" id="slide-8">
+    <div class="slide-num-tag">08 / 15</div>
+    <div class="section-tag anim-1">UI / UX Testing</div>
+    <h2 class="gradient-title anim-2">UI/UX &amp; Responsive Testing</h2>
+
+    <div class="grid-2 anim-3" style="gap:28px;align-items:start;">
+      <div>
+        <ul style="margin-bottom:20px;">
+          <li><strong style="color:var(--text-main);">Mobile Responsiveness:</strong> Layout adapts correctly across 320px–1920px viewports using Tailwind CSS breakpoints</li>
+          <li><strong style="color:var(--text-main);">Navigation Usability:</strong> Hamburger menu on mobile, sticky nav on desktop, smooth scroll to sections</li>
+          <li><strong style="color:var(--text-main);">Layout Consistency:</strong> Consistent spacing, typography scale, and card components across all pages</li>
+          <li><strong style="color:var(--text-main);">User-Friendly Interface:</strong> Framer Motion micro-animations provide fluid, intuitive feedback</li>
+          <li><strong style="color:var(--text-main);">Colour Contrast:</strong> WCAG AA-compliant text-to-background ratios verified</li>
+        </ul>
+
+        <div style="background:rgba(79,142,247,0.07);border:1px solid rgba(79,142,247,0.2);border-radius:12px;padding:14px;">
+          <div style="font-size:.82rem;font-weight:700;color:var(--accent1);margin-bottom:8px;">Devices Tested</div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <span class="badge" style="background:rgba(79,142,247,0.18);color:#90caf9;">📱 iPhone 14</span>
+            <span class="badge" style="background:rgba(79,142,247,0.18);color:#90caf9;">📱 Samsung S22</span>
+            <span class="badge" style="background:rgba(79,142,247,0.18);color:#90caf9;">📟 iPad Pro</span>
+            <span class="badge" style="background:rgba(79,142,247,0.18);color:#90caf9;">💻 MacBook 13"</span>
+            <span class="badge" style="background:rgba(79,142,247,0.18);color:#90caf9;">🖥 27" Desktop</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Device mockups -->
+      <div class="anim-4">
+        <div class="device-mockups">
+          <!-- Desktop -->
+          <div class="device-frame device-desktop">
+            <div class="device-screen">
+              <div class="d-bar" style="width:60%;margin-bottom:6px;"></div>
+              <div class="d-block" style="height:60px;margin-bottom:6px;"></div>
+              <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;">
+                <div class="d-block" style="height:40px;"></div>
+                <div class="d-block" style="height:40px;"></div>
+                <div class="d-block" style="height:40px;"></div>
+              </div>
+              <div class="d-bar" style="width:80%;margin-top:6px;"></div>
+              <div class="d-bar" style="width:55%;margin-top:4px;"></div>
+            </div>
+            <div class="device-label">🖥 Desktop</div>
+          </div>
+          <!-- Tablet -->
+          <div class="device-frame device-tablet">
+            <div class="device-screen">
+              <div class="d-bar" style="width:70%;margin-bottom:6px;"></div>
+              <div class="d-block" style="height:55px;margin-bottom:6px;"></div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;">
+                <div class="d-block" style="height:36px;"></div>
+                <div class="d-block" style="height:36px;"></div>
+              </div>
+              <div class="d-bar" style="width:90%;margin-top:6px;"></div>
+              <div class="d-bar" style="width:65%;margin-top:4px;"></div>
+            </div>
+            <div class="device-label">📟 Tablet</div>
+          </div>
+          <!-- Mobile -->
+          <div class="device-frame device-mobile">
+            <div class="device-screen">
+              <div class="d-bar" style="width:100%;margin-bottom:6px;"></div>
+              <div class="d-block" style="height:50px;margin-bottom:6px;"></div>
+              <div class="d-block" style="height:30px;margin-bottom:5px;"></div>
+              <div class="d-block" style="height:30px;margin-bottom:5px;"></div>
+              <div class="d-bar" style="width:80%;margin-top:4px;"></div>
+            </div>
+            <div class="device-label">📱 Mobile</div>
+          </div>
+        </div>
+        <p style="text-align:center;font-size:.78rem;color:var(--text-sub);margin-top:12px;">
+          Layout adapts fluidly across all viewports
+        </p>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════
+       SLIDE 9 — PERFORMANCE (LIGHTHOUSE)
+  ═══════════════════════════════════════════ -->
+  <div class="slide" id="slide-9">
+    <div class="slide-num-tag">09 / 15</div>
+    <div class="section-tag anim-1">Performance Testing</div>
+    <h2 class="gradient-title anim-2">Lighthouse Audit Results</h2>
+
+    <div class="grid-2 anim-3" style="gap:28px;align-items:start;">
+      <!-- Score cards -->
+      <div class="score-grid">
+        <div class="score-card score-perf">
+          <div class="score-label">
+            <span>⚡ Performance</span>
+            <span class="score-num">43</span>
+          </div>
+          <div class="score-bar-bg"><div class="score-bar" style="width:43%;"></div></div>
+          <div class="score-note">Needs optimization — large JS bundle, unoptimized images</div>
+        </div>
+        <div class="score-card score-acc">
+          <div class="score-label">
+            <span>♿ Accessibility</span>
+            <span class="score-num">90</span>
+          </div>
+          <div class="score-bar-bg"><div class="score-bar" style="width:90%;"></div></div>
+          <div class="score-note">Strong — semantic HTML, ARIA labels present</div>
+        </div>
+        <div class="score-card score-bp">
+          <div class="score-label">
+            <span>🏆 Best Practices</span>
+            <span class="score-num">100</span>
+          </div>
+          <div class="score-bar-bg"><div class="score-bar" style="width:100%;"></div></div>
+          <div class="score-note">Excellent — HTTPS, secure headers, no deprecated APIs</div>
+        </div>
+        <div class="score-card score-seo">
+          <div class="score-label">
+            <span>🔍 SEO</span>
+            <span class="score-num">82</span>
+          </div>
+          <div class="score-bar-bg"><div class="score-bar" style="width:82%;"></div></div>
+          <div class="score-note">Good — meta tags present, can improve structured data</div>
+        </div>
+      </div>
+
+      <!-- Ring chart SVG -->
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        <div class="ring-chart-wrap">
+          <!-- Performance -->
+          <div class="ring-chart">
+            <svg width="90" height="90" viewBox="0 0 90 90">
+              <circle cx="45" cy="45" r="36" fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="9"/>
+              <circle cx="45" cy="45" r="36" fill="none" stroke="#ff7043" stroke-width="9"
+                stroke-dasharray="226.2" stroke-dashoffset="128.9"
+                stroke-linecap="round" transform="rotate(-90 45 45)"/>
+              <text x="45" y="50" text-anchor="middle" font-size="16" font-weight="800" fill="#ff7043">43</text>
+            </svg>
+            <div class="ring-label">Performance</div>
+          </div>
+          <!-- Accessibility -->
+          <div class="ring-chart">
+            <svg width="90" height="90" viewBox="0 0 90 90">
+              <circle cx="45" cy="45" r="36" fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="9"/>
+              <circle cx="45" cy="45" r="36" fill="none" stroke="#69f0ae" stroke-width="9"
+                stroke-dasharray="226.2" stroke-dashoffset="22.6"
+                stroke-linecap="round" transform="rotate(-90 45 45)"/>
+              <text x="45" y="50" text-anchor="middle" font-size="16" font-weight="800" fill="#69f0ae">90</text>
+            </svg>
+            <div class="ring-label">Accessibility</div>
+          </div>
+          <!-- Best Practices -->
+          <div class="ring-chart">
+            <svg width="90" height="90" viewBox="0 0 90 90">
+              <circle cx="45" cy="45" r="36" fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="9"/>
+              <circle cx="45" cy="45" r="36" fill="none" stroke="#40c4ff" stroke-width="9"
+                stroke-dasharray="226.2" stroke-dashoffset="0"
+                stroke-linecap="round" transform="rotate(-90 45 45)"/>
+              <text x="45" y="50" text-anchor="middle" font-size="16" font-weight="800" fill="#40c4ff">100</text>
+            </svg>
+            <div class="ring-label">Best Practices</div>
+          </div>
+          <!-- SEO -->
+          <div class="ring-chart">
+            <svg width="90" height="90" viewBox="0 0 90 90">
+              <circle cx="45" cy="45" r="36" fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="9"/>
+              <circle cx="45" cy="45" r="36" fill="none" stroke="#ce93d8" stroke-width="9"
+                stroke-dasharray="226.2" stroke-dashoffset="40.7"
+                stroke-linecap="round" transform="rotate(-90 45 45)"/>
+              <text x="45" y="50" text-anchor="middle" font-size="16" font-weight="800" fill="#ce93d8">82</text>
+            </svg>
+            <div class="ring-label">SEO</div>
+          </div>
+        </div>
+
+        <!-- Key findings -->
+        <div style="background:var(--glass);border:1px solid var(--glass-border);border-radius:12px;padding:16px;">
+          <div style="font-size:.82rem;font-weight:700;color:var(--text-main);margin-bottom:10px;">📋 Key Findings</div>
+          <ul style="gap:6px;">
+            <li style="font-size:.82rem;">Render-blocking resources slow initial load (Performance: 43)</li>
+            <li style="font-size:.82rem;">Strong ARIA implementation boosts Accessibility to 90</li>
+            <li style="font-size:.82rem;">HTTPS + secure headers earn perfect Best Practices score</li>
+            <li style="font-size:.82rem;">Missing structured data slightly limits SEO (82)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════
+       SLIDE 10 — SECURITY TESTING
+  ═══════════════════════════════════════════ -->
+  <div class="slide" id="slide-10">
+    <div class="slide-num-tag">10 / 15</div>
+    <div class="section-tag anim-1">Security Testing</div>
+    <h2 class="gradient-title anim-2">Security Testing Results</h2>
+
+    <div class="grid-2 anim-3" style="gap:24px;align-items:start;">
+      <div class="check-list">
+        <div class="check-item">
+          <span class="check-icon">🔒</span>
+          <div class="check-body">
+            <h4>Password Masking</h4>
+            <p>Password fields use <code style="color:#90caf9;">type="password"</code>; characters are masked on input &amp; never exposed in the DOM or network logs.</p>
+          </div>
+        </div>
+        <div class="check-item">
+          <span class="check-icon">🛡️</span>
+          <div class="check-body">
+            <h4>Route Protection</h4>
+            <p>Protected routes redirect unauthenticated users to /login using React Router guards before rendering sensitive pages.</p>
+          </div>
+        </div>
+        <div class="check-item">
+          <span class="check-icon">🚫</span>
+          <div class="check-body">
+            <h4>Unauthorized Access Prevention</h4>
+            <p>Direct URL access to /dashboard or /admin without a valid session token is blocked server-side with 401 responses.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="check-list">
+        <div class="check-item">
+          <span class="check-icon">🧹</span>
+          <div class="check-body">
+            <h4>Input Validation &amp; Sanitisation</h4>
+            <p>All user inputs are validated on both client and server. XSS payloads and SQL-injection attempts are safely handled.</p>
+          </div>
+        </div>
+        <div class="check-item">
+          <span class="check-icon">🔑</span>
+          <div class="check-body">
+            <h4>Session Handling</h4>
+            <p>JWT tokens stored in httpOnly cookies; tokens expire after inactivity; logout clears session storage completely.</p>
+          </div>
+        </div>
+        <div class="check-item">
+          <span class="check-icon">✅</span>
+          <div class="check-body">
+            <h4>Overall Security Assessment</h4>
+            <p>Core security measures are correctly implemented. Recommended improvements: add CSRF tokens, rate-limiting on login.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════
+       SLIDE 11 — BUG REPORTS
+  ═══════════════════════════════════════════ -->
+  <div class="slide" id="slide-11">
+    <div class="slide-num-tag">11 / 15</div>
+    <div class="section-tag anim-1">Bug Reports</div>
+    <h2 class="gradient-title anim-2">Bug Report Summary</h2>
+
+    <div class="scroll-area anim-3">
+      <table class="styled-table">
+        <thead>
+          <tr>
+            <th>Bug ID</th>
+            <th>Description</th>
+            <th>Module</th>
+            <th>Severity</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong style="color:#ff7043;">BUG-001</strong></td>
+            <td>Slow dashboard loading — initial render takes 3–4 s on 3G</td>
+            <td>Dashboard</td>
+            <td><span class="badge badge-high">High</span></td>
+            <td><span class="badge badge-open">Open</span></td>
+          </tr>
+          <tr>
+            <td><strong style="color:#ff7043;">BUG-002</strong></td>
+            <td>Search accepts empty query — returns all results without warning</td>
+            <td>Search</td>
+            <td><span class="badge badge-med">Medium</span></td>
+            <td><span class="badge badge-open">Open</span></td>
+          </tr>
+          <tr>
+            <td><strong style="color:#ff7043;">BUG-003</strong></td>
+            <td>Mobile navbar overlaps hero text at &lt; 360 px viewport width</td>
+            <td>Navigation</td>
+            <td><span class="badge badge-med">Medium</span></td>
+            <td><span class="badge badge-open">Open</span></td>
+          </tr>
+          <tr>
+            <td><strong style="color:#ff7043;">BUG-004</strong></td>
+            <td>Course images fail to load when CDN is unavailable (no fallback)</td>
+            <td>Courses</td>
+            <td><span class="badge badge-high">High</span></td>
+            <td><span class="badge badge-open">Open</span></td>
+          </tr>
+          <tr>
+            <td><strong style="color:#ff7043;">BUG-005</strong></td>
+            <td>Registration form accepts duplicate email without informing user</td>
+            <td>Auth</td>
+            <td><span class="badge badge-high">High</span></td>
+            <td><span class="badge badge-closed">Resolved</span></td>
+          </tr>
+          <tr>
+            <td><strong style="color:#ff7043;">BUG-006</strong></td>
+            <td>Stellar Scanner loading spinner persists on API timeout</td>
+            <td>Stellar Scanner</td>
+            <td><span class="badge badge-low">Low</span></td>
+            <td><span class="badge badge-closed">Resolved</span></td>
+          </tr>
+          <tr>
+            <td><strong style="color:#ff7043;">BUG-007</strong></td>
+            <td>FAQ accordion flickers during open/close animation on Safari</td>
+            <td>Home / FAQ</td>
+            <td><span class="badge badge-low">Low</span></td>
+            <td><span class="badge badge-open">Open</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="anim-4" style="display:flex;gap:16px;margin-top:16px;">
+      <div style="flex:1;background:rgba(244,67,54,0.10);border:1px solid rgba(244,67,54,0.22);border-radius:10px;padding:12px;text-align:center;">
+        <div style="font-size:1.6rem;font-weight:800;color:#e57373;">3</div>
+        <div style="font-size:.78rem;color:var(--text-sub);">High Severity</div>
+      </div>
+      <div style="flex:1;background:rgba(255,193,7,0.10);border:1px solid rgba(255,193,7,0.22);border-radius:10px;padding:12px;text-align:center;">
+        <div style="font-size:1.6rem;font-weight:800;color:#ffd54f;">2</div>
+        <div style="font-size:.78rem;color:var(--text-sub);">Medium Severity</div>
+      </div>
+      <div style="flex:1;background:rgba(76,175,80,0.10);border:1px solid rgba(76,175,80,0.22);border-radius:10px;padding:12px;text-align:center;">
+        <div style="font-size:1.6rem;font-weight:800;color:#81c784;">2</div>
+        <div style="font-size:.78rem;color:var(--text-sub);">Low Severity</div>
+      </div>
+      <div style="flex:1;background:rgba(79,142,247,0.10);border:1px solid rgba(79,142,247,0.22);border-radius:10px;padding:12px;text-align:center;">
+        <div style="font-size:1.6rem;font-weight:800;color:#90caf9;">2</div>
+        <div style="font-size:.78rem;color:var(--text-sub);">Resolved</div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════
+       SLIDE 12 — TOOLS USED
+  ═══════════════════════════════════════════ -->
+  <div class="slide" id="slide-12">
+    <div class="slide-num-tag">12 / 15</div>
+    <div class="section-tag anim-1">Tools &amp; Technologies</div>
+    <h2 class="gradient-title anim-2">Tools Used for Testing</h2>
+
+    <div class="grid-3 anim-3" style="margin-top:4px;">
+      <div class="tool-card">
+        <span class="tool-icon">🏎</span>
+        <div class="tool-name">Google Lighthouse</div>
+        <div class="tool-desc">Automated audit for Performance, Accessibility, Best Practices &amp; SEO scores</div>
+      </div>
+      <div class="tool-card">
+        <span class="tool-icon">🔧</span>
+        <div class="tool-name">Chrome DevTools</div>
+        <div class="tool-desc">Network throttling, responsive emulation, console debugging &amp; performance profiling</div>
+      </div>
+      <div class="tool-card">
+        <span class="tool-icon">🌐</span>
+        <div class="tool-name">Cross-Browser Testing</div>
+        <div class="tool-desc">Tested on Chrome, Firefox, Edge, Safari &amp; Opera to ensure compatibility</div>
+      </div>
+      <div class="tool-card">
+        <span class="tool-icon">📋</span>
+        <div class="tool-name">Manual Testing</div>
+        <div class="tool-desc">Exploratory and black-box test cases executed manually to detect UI &amp; UX issues</div>
+      </div>
+      <div class="tool-card">
+        <span class="tool-icon">🤖</span>
+        <div class="tool-name">Selenium IDE</div>
+        <div class="tool-desc">Optional automated UI test recording and playback for regression scenarios</div>
+      </div>
+      <div class="tool-card">
+        <span class="tool-icon">📊</span>
+        <div class="tool-name">React DevTools</div>
+        <div class="tool-desc">Component state inspection, profiler timings, and re-render analysis</div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════
+       SLIDE 13 — CHALLENGES & IMPROVEMENTS
+  ═══════════════════════════════════════════ -->
+  <div class="slide" id="slide-13">
+    <div class="slide-num-tag">13 / 15</div>
+    <div class="section-tag anim-1">Challenges &amp; Improvements</div>
+    <h2 class="gradient-title anim-2">Challenges Identified &amp; Suggested Improvements</h2>
+
+    <div class="grid-2 anim-3" style="gap:24px;align-items:start;">
+      <div>
+        <h3 style="color:#e57373;margin-bottom:14px;">⚠ Challenges Found</h3>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div class="card" style="padding:14px 18px;border-color:rgba(244,67,54,0.2);">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <span style="font-size:1.2rem;">📉</span>
+              <div>
+                <div style="font-size:.9rem;font-weight:700;color:var(--text-main);">Low Performance Score (43)</div>
+                <div style="font-size:.8rem;color:var(--text-sub);">Large render-blocking JS &amp; uncompressed images reduce Lighthouse score</div>
+              </div>
+            </div>
+          </div>
+          <div class="card" style="padding:14px 18px;border-color:rgba(244,67,54,0.2);">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <span style="font-size:1.2rem;">🔍</span>
+              <div>
+                <div style="font-size:.9rem;font-weight:700;color:var(--text-main);">Incomplete SEO (82)</div>
+                <div style="font-size:.8rem;color:var(--text-sub);">Missing structured data &amp; Open Graph meta tags limit discoverability</div>
+              </div>
+            </div>
+          </div>
+          <div class="card" style="padding:14px 18px;border-color:rgba(244,67,54,0.2);">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <span style="font-size:1.2rem;">📱</span>
+              <div>
+                <div style="font-size:.9rem;font-weight:700;color:var(--text-main);">Mobile Navbar Overlap</div>
+                <div style="font-size:.8rem;color:var(--text-sub);">Hero content overlaps at &lt; 360 px viewports — requires CSS fix</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <h3 style="color:#69f0ae;margin-bottom:14px;">🚀 Recommended Improvements</h3>
+        <ul>
+          <li><strong style="color:var(--text-main);">Performance Optimization:</strong> Code-splitting &amp; tree-shaking to reduce JS bundle size</li>
+          <li><strong style="color:var(--text-main);">Image Compression:</strong> Convert all images to WebP format with responsive <code style="color:#90caf9;">srcset</code></li>
+          <li><strong style="color:var(--text-main);">Lazy Loading:</strong> Add <code style="color:#90caf9;">loading="lazy"</code> to images &amp; defer non-critical scripts</li>
+          <li><strong style="color:var(--text-main);">Better SEO:</strong> Add JSON-LD structured data, canonical URLs, Open Graph tags</li>
+          <li><strong style="color:var(--text-main);">Enhanced Security:</strong> Implement CSRF tokens and brute-force rate limiting</li>
+          <li><strong style="color:var(--text-main);">Error Handling:</strong> Add image fallbacks and graceful API timeout messages</li>
+          <li><strong style="color:var(--text-main);">Automated Testing:</strong> Integrate CI/CD pipeline with Jest + Cypress for regression tests</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════
+       SLIDE 14 — CONCLUSION
+  ═══════════════════════════════════════════ -->
+  <div class="slide" id="slide-14">
+    <div class="slide-num-tag">14 / 15</div>
+    <div class="section-tag anim-1">Conclusion</div>
+    <h2 class="gradient-title anim-2">Conclusion</h2>
+
+    <div class="grid-2 anim-3" style="gap:28px;align-items:start;">
+      <div>
+        <ul style="margin-bottom:24px;">
+          <li><strong style="color:var(--text-main);">Testing improved quality:</strong> Systematic STQA revealed 7 bugs and multiple improvement opportunities not visible during development</li>
+          <li><strong style="color:var(--text-main);">Core functionality verified:</strong> Login, registration, course browsing, search, and logout all work correctly</li>
+          <li><strong style="color:var(--text-main);">Security essentials in place:</strong> Password masking, route guards, and input validation are correctly implemented</li>
+          <li><strong style="color:var(--text-main);">Optimization areas identified:</strong> Performance (43/100) and minor SEO gaps require targeted improvements</li>
+          <li><strong style="color:var(--text-main);">STQA is essential:</strong> Software testing ensures reliability, security, and a positive user experience before production deployment</li>
+        </ul>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:14px;">
+        <div style="background:rgba(76,175,80,0.08);border:1px solid rgba(76,175,80,0.22);border-radius:14px;padding:18px;">
+          <div style="font-size:.85rem;font-weight:700;color:#81c784;margin-bottom:10px;">✅ What Worked Well</div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;">
+            <span class="badge badge-pass">Functional Tests</span>
+            <span class="badge badge-pass">Security Measures</span>
+            <span class="badge badge-pass">Best Practices</span>
+            <span class="badge badge-pass">Accessibility</span>
+            <span class="badge badge-pass">Authentication Flow</span>
+          </div>
+        </div>
+        <div style="background:rgba(255,112,67,0.08);border:1px solid rgba(255,112,67,0.22);border-radius:14px;padding:18px;">
+          <div style="font-size:.85rem;font-weight:700;color:#ff8a65;margin-bottom:10px;">⚠ Areas to Improve</div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;">
+            <span class="badge badge-open">Performance</span>
+            <span class="badge badge-open">SEO</span>
+            <span class="badge badge-open">Image Optimization</span>
+            <span class="badge badge-open">Error Handling</span>
+          </div>
+        </div>
+        <div style="background:rgba(79,142,247,0.08);border:1px solid rgba(79,142,247,0.22);border-radius:14px;padding:16px;">
+          <p style="font-size:.85rem;color:var(--text-sub);font-style:italic;margin:0;">
+            "Quality is not an act, it is a habit." — Aristotle<br>
+            <span style="font-size:.78rem;color:#9fa8da;">STQA transforms good software into great software.</span>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════
+       SLIDE 15 — THANK YOU
+  ═══════════════════════════════════════════ -->
+  <div class="slide" id="slide-15">
+    <div class="slide-num-tag">15 / 15</div>
+
+    <div class="big-icon anim-1">🚀</div>
+
+    <h1 class="gradient-title anim-2" style="font-size:clamp(2.4rem,5vw,4rem);margin-bottom:16px;">
+      Thank You!
+    </h1>
+
+    <p class="anim-3" style="font-size:1.25rem;color:var(--text-sub);margin-bottom:32px;">
+      Questions &amp; Answers
+    </p>
+
+    <div style="width:280px;height:2px;background:linear-gradient(90deg,var(--accent1),var(--accent2),var(--accent3));margin:0 auto 32px;" class="anim-3"></div>
+
+    <div class="anim-4" style="display:flex;gap:20px;justify-content:center;flex-wrap:wrap;">
+      <div style="background:var(--glass);border:1px solid var(--glass-border);border-radius:12px;padding:14px 22px;text-align:center;">
+        <div style="font-size:1.3rem;margin-bottom:6px;">🎓</div>
+        <div style="font-size:.82rem;color:var(--text-sub);">Software Testing &amp; QA</div>
+        <div style="font-size:.78rem;color:var(--text-sub);">University Course</div>
+      </div>
+      <div style="background:var(--glass);border:1px solid var(--glass-border);border-radius:12px;padding:14px 22px;text-align:center;">
+        <div style="font-size:1.3rem;margin-bottom:6px;">🌌</div>
+        <div style="font-size:.82rem;color:var(--text-sub);">Astro Academy</div>
+        <div style="font-size:.78rem;color:var(--text-sub);">e-Learning Platform</div>
+      </div>
+      <div style="background:var(--glass);border:1px solid var(--glass-border);border-radius:12px;padding:14px 22px;text-align:center;">
+        <div style="font-size:1.3rem;margin-bottom:6px;">✅</div>
+        <div style="font-size:.82rem;color:var(--text-sub);">15 Slides Presented</div>
+        <div style="font-size:.78rem;color:var(--text-sub);">Comprehensive STQA Report</div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /deck -->
+
+
+<!-- Navigation controls -->
+<div id="controls">
+  <button id="btn-prev" title="Previous (←)">&#8592;</button>
+  <span id="slide-counter">1 / 15</span>
+  <button id="btn-next" title="Next (→)">&#8594;</button>
+</div>
+
+
+<script>
+/* ─────────────────────────────────────────────
+   STAR CANVAS
+───────────────────────────────────────────── */
+(function () {
+  const canvas = document.getElementById('stars-canvas');
+  const ctx    = canvas.getContext('2d');
+
+  function resize() {
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  const STARS = Array.from({ length: 220 }, () => ({
+    x: Math.random(),
+    y: Math.random(),
+    r: Math.random() * 1.4 + 0.2,
+    a: Math.random(),
+    da: (Math.random() - 0.5) * 0.004,
+    dx: (Math.random() - 0.5) * 0.00015,
+    dy: (Math.random() - 0.5) * 0.00015,
+  }));
+
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    STARS.forEach(s => {
+      s.a = Math.max(0.05, Math.min(1, s.a + s.da));
+      if (s.a <= 0.05 || s.a >= 1) s.da *= -1;
+      s.x = (s.x + s.dx + 1) % 1;
+      s.y = (s.y + s.dy + 1) % 1;
+      ctx.beginPath();
+      ctx.arc(s.x * canvas.width, s.y * canvas.height, s.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(200,210,255,${s.a})`;
+      ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+
+/* ─────────────────────────────────────────────
+   SLIDE NAVIGATION
+───────────────────────────────────────────── */
+(function () {
+  const slides  = Array.from(document.querySelectorAll('.slide'));
+  const counter = document.getElementById('slide-counter');
+  const bar     = document.getElementById('progress-bar');
+  const btnPrev = document.getElementById('btn-prev');
+  const btnNext = document.getElementById('btn-next');
+  let   current = 0;
+
+  function goto(idx) {
+    if (idx < 0 || idx >= slides.length) return;
+
+    const prev = slides[current];
+    prev.classList.remove('active');
+    prev.classList.add('exit');
+    setTimeout(() => prev.classList.remove('exit'), 600);
+
+    current = idx;
+    slides[current].classList.add('active');
+    counter.textContent = `${current + 1} / ${slides.length}`;
+    bar.style.width     = `${((current + 1) / slides.length) * 100}%`;
+
+    btnPrev.style.opacity = current === 0 ? '0.3' : '1';
+    btnNext.style.opacity = current === slides.length - 1 ? '0.3' : '1';
+  }
+
+  btnPrev.addEventListener('click', () => goto(current - 1));
+  btnNext.addEventListener('click', () => goto(current + 1));
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') goto(current + 1);
+    if (e.key === 'ArrowLeft'  || e.key === 'PageUp')                    goto(current - 1);
+    if (e.key === 'Home') goto(0);
+    if (e.key === 'End')  goto(slides.length - 1);
+  });
+
+  // Touch / swipe
+  let touchX = null;
+  document.addEventListener('touchstart', e => { touchX = e.touches[0].clientX; });
+  document.addEventListener('touchend',   e => {
+    if (touchX === null) return;
+    const dx = e.changedTouches[0].clientX - touchX;
+    if (Math.abs(dx) > 50) goto(dx < 0 ? current + 1 : current - 1);
+    touchX = null;
+  });
+
+  // Init
+  goto(0);
+})();
+</script>
+</body>
+</html>
